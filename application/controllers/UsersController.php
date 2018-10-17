@@ -3,11 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class UsersController extends CI_Controller {
 
-	public function __construct(){
+	public function __construct() {
 		parent::__construct();
 		$this->load->model('user');
 	}
-	public function response($data){
+
+	public function response($data) {
 		$this->output
 			 ->set_content_type('application/json')
 			 ->set_status_header(200)
@@ -15,7 +16,16 @@ class UsersController extends CI_Controller {
 			 ->_display();
 		exit;
 	}
-	public function register(){
+
+	public function register() {
 		return $this->response($this->user->save());
+	}
+
+	public function all_users() {
+		return $this->response($this->user->get_all());
+	}
+
+	public function detail_user($id) {
+		return $this->response($this->user->get_all($id));
 	}
 }
