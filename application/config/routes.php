@@ -7,7 +7,7 @@ $route['api/users/(:num)']['GET']	= "UsersController/detail_user/$1";
 $route['api/register']['POST'] 		= "UsersController/register";
 $route['api/user/(:num)']['PUT'] 	= "UsersController/update/$1";
 $route['api/user/(:num)']['DELETE'] = "UsersController/delete/$1";
-$route['api/login']					= "UsersController/login";
+$route['api/login']['POST']		    = "UsersController/login";
 
 
 $route['default_controller'] = 'welcome';

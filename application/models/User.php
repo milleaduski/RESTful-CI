@@ -17,12 +17,22 @@ class User extends CI_Model
 		}
 	}
 
-	public function get_all($id = null){
-		if($id != null) {
-			$query  = $this->db->get_where('users', array('id' => $id));
+	public function get_all($key = null, $value = null) {
+		if($key != null) {
+			$query  = $this->db->get_where('users', array($key => $value));
 			return $query->result();
 		}
 		$query  = $this->db->get('users');
 		return $query->result();
+	}
+
+	public function is_valid() {
+		$email		= $this->input->post('email');
+		$password   = $this->input->post('password');
+
+		$hash 		= $this->get_all('email', $email)[0]->password;
+		if(password_verify($password, $hash))
+			return true;
+		return false;
 	}
 }
