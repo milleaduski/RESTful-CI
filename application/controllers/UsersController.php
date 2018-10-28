@@ -7,6 +7,7 @@ use  \Firebase\JWT\JWT;
 
 class UsersController extends CI_Controller {
 
+	private $secret = "This is a secret key";
 	public function __construct() {
 		parent::__construct();
 		$this->load->model('user');
@@ -40,6 +41,19 @@ class UsersController extends CI_Controller {
 				'message'	=> 'Password or Email is wrong'
 			]);
 		}
-		die('User is valid');
+
+		//Get User data
+		$email = $this->input->post('email');
+		$user = $this->user->get_all('email',$email);
+
+		// Collect data
+		$date = new DateTime();
+		$payload['id'] 		= $user[0]->id;
+		$payload['email'] 	= $user[0]->email;
+		$payload['iat'] 	= $date->getTimestamp();
+		$payload['exp'] 	= $date->getTimestamp() + 60*60*2;
+
+		$output['id_token'] = JWT::encode($payload, $this->secret);
+		$this->response($output);
 	}
 }
