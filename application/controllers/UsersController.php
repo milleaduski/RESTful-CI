@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 require_once APPPATH .'libraries/JWT.php';
 
 use  \Firebase\JWT\JWT;
-
+use \Firebase\JWT\SignatureInvalidException;
 class UsersController extends CI_Controller {
 
 	private $secret = "This is a secret key";
@@ -55,5 +55,20 @@ class UsersController extends CI_Controller {
 
 		$output['id_token'] = JWT::encode($payload, $this->secret);
 		$this->response($output);
+	}
+
+	public function check_token() {
+		$jwt = $this->input->get_request_header('Authorization');
+
+		try {
+			//decode token with HS256 method
+			$decode = JWT::decode($jwt, $this->secret, array('HS256'));
+			var_dump($decode);exit;
+		} catch(\Exception $e) {
+			return $this->response([
+				'success'	=> false,
+				'message'	=> 'invalid token'
+			]);
+		}
 	}
 }
