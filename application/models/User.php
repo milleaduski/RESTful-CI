@@ -35,4 +35,17 @@ class User extends CI_Model
 			return true;
 		return false;
 	}
+
+	public function update($id, $data) {
+		$data = ["email" => $data->email];
+
+		$this->db->where('id', $id);
+
+		if ($this->db->update('users', $data)) {
+			return [
+				'status' 	=> true,
+				'message'	=> 'Data successfully updated'
+			];
+		}
+	}
 }

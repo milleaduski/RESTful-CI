@@ -56,19 +56,41 @@ class UsersController extends CI_Controller {
 		$output['id_token'] = JWT::encode($payload, $this->secret);
 		$this->response($output);
 	}
+	public function update($id) {
+		$data = json_decode(file_get_contents('php://input'));
+		if ($this->protected_method($id)) {
+			return $this->response($this->user->update($id, $data));
+		}
+	}
+
+	public function protected_method($id) {
+		if ($id_from_token = $this->check_token()) {
+			if ($id_from_token == $id) {
+				return true;
+			} else {
+				return $this->response([
+					'success'	=> false,
+					'message'	=> "User is different."
+				]);
+			}
+		}
+	}
 
 	public function check_token() {
 		$jwt = $this->input->get_request_header('Authorization');
-
 		try {
 			//decode token with HS256 method
 			$decode = JWT::decode($jwt, $this->secret, array('HS256'));
-			var_dump($decode);exit;
+			return $decode->id;
 		} catch(\Exception $e) {
 			return $this->response([
 				'success'	=> false,
 				'message'	=> 'invalid token'
 			]);
 		}
+	}
+
+	public function get_input() {
+		return json_decode(file_get_contents('php://input'));
 	}
 }
